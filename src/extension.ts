@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-
+ 
 let logFilePath: string;
 let lastActiveFile: string | undefined;
 
@@ -42,9 +42,7 @@ function logSessionStart() {
 }
 
 function onActiveEditorChange(editor: vscode.TextEditor | undefined) {
-    if (!editor) {
-        return;
-    }
+    if (!editor) { return; }
 
     const currentFile = editor.document.uri.fsPath;
     
@@ -116,4 +114,6 @@ export function deactivate() {
     } catch (error) {
         console.error('Error writing session end to log file:', error);
     }
+
+
 }
