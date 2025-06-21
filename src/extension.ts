@@ -36,7 +36,7 @@ function logSessionStart() {
     const activeEditor = vscode.window.activeTextEditor;
     const currentFile = activeEditor ? activeEditor.document.uri.fsPath : "No active file found";
     
-    const sessionStartMessage = `\nSession started at: ${dateTimeString}\nCurrent working directory: ${currentFile}\n`;
+    const sessionStartMessage = `\nSession started at: ${dateTimeString}\n\n`;
     
     appendToLogFile(sessionStartMessage);
 }
@@ -59,7 +59,7 @@ function logFileActivity(filePath: string) {
     const now = new Date();
     const dateTimeString = formatDateTime(now);
     
-    const message = `User is working on: ${filePath}, at this time: ${dateTimeString}\n`;
+    const message = `${os.userInfo().username} has switched the window into: ${filePath}, at this time: ${dateTimeString}\n`;
     
     appendToLogFile(message);
 }
@@ -72,7 +72,7 @@ function formatDateTime(date: Date): string {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     
-    return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
+    return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function appendToLogFile(message: string) {
