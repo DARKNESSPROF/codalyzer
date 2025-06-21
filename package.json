@@ -2,7 +2,7 @@
   "name": "session-logger",
   "displayName": "Session Logger",
   "description": "Logs user sessions and file activities to a log file",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "your-publisher-name",
   "engines": {
     "vscode": "^1.74.0"

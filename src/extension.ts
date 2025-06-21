@@ -8,21 +8,18 @@ let lastActiveFile: string | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
     // Initialize log file path
-    const userName = os.userInfo().username;
     const documentsPath = path.join(os.homedir(), 'Documents');
-    logFilePath = path.join(documentsPath, 'vscode-session-log.txt');
+    logFilePath = path.join(documentsPath, 'Activity-Session-Log.txt');
 
     // Log session start
     logSessionStart();
 
     // Register event listeners
     const activeEditorChangeDisposable = vscode.window.onDidChangeActiveTextEditor(onActiveEditorChange);
-    const textDocumentChangeDisposable = vscode.workspace.onDidChangeTextDocument(onTextDocumentChange);
     const openLogFileDisposable = vscode.commands.registerCommand('session-logger.openLogFile', openLogFile);
 
     context.subscriptions.push(
         activeEditorChangeDisposable,
-        textDocumentChangeDisposable,
         openLogFileDisposable
     );
 
@@ -39,7 +36,7 @@ function logSessionStart() {
     const activeEditor = vscode.window.activeTextEditor;
     const currentFile = activeEditor ? activeEditor.document.uri.fsPath : "No active file found";
     
-    const sessionStartMessage = `Session started at: ${dateTimeString}\nCurrent working directory: ${currentFile}\n`;
+    const sessionStartMessage = `\nSession started at: ${dateTimeString}\nCurrent working directory: ${currentFile}\n`;
     
     appendToLogFile(sessionStartMessage);
 }
@@ -54,20 +51,11 @@ function onActiveEditorChange(editor: vscode.TextEditor | undefined) {
     // Only log if the file has actually changed
     if (currentFile !== lastActiveFile) {
         lastActiveFile = currentFile;
-        logFileActivity(currentFile, 'switched to');
+        logFileActivity(currentFile);
     }
 }
 
-function onTextDocumentChange(event: vscode.TextDocumentChangeEvent) {
-    const currentFile = event.document.uri.fsPath;
-    
-    // Only log if this is the active editor and the document has actual content changes
-    if (vscode.window.activeTextEditor?.document === event.document && event.contentChanges.length > 0) {
-        logFileActivity(currentFile, 'edited');
-    }
-}
-
-function logFileActivity(filePath: string, action: string) {
+function logFileActivity(filePath: string) {
     const now = new Date();
     const dateTimeString = formatDateTime(now);
     
@@ -84,7 +72,7 @@ function formatDateTime(date: Date): string {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
 }
 
 function appendToLogFile(message: string) {
