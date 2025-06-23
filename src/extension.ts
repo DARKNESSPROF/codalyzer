@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { initializeLogPath, formatDateTime, appendToLogFile, openLogFile } from './utils';
 import { onActiveEditorSwitch, setLastActiveFile } from './switchHandler';
 import { onTextDocumentChange } from './editHandler';
+import { onActiveFileRun } from './runHandler'; 
 
 let logFilePath: string;
 
@@ -16,11 +17,13 @@ export function activate(context: vscode.ExtensionContext) {
     const activeEditorChangeDisposable = vscode.window.onDidChangeActiveTextEditor(onActiveEditorSwitch);
     const textDocumentChangeDisposable = vscode.workspace.onDidChangeTextDocument(onTextDocumentChange);
     const openLogFileDisposable = vscode.commands.registerCommand('session-logger.openLogFile', openLogFile);
+    const runHandlerDisposable = onActiveFileRun(); 
 
     context.subscriptions.push(
         activeEditorChangeDisposable,
         textDocumentChangeDisposable,
-        openLogFileDisposable
+        openLogFileDisposable,
+        runHandlerDisposable
     );
 
     // Initial check for active editor
@@ -32,21 +35,20 @@ export function activate(context: vscode.ExtensionContext) {
 function logSessionStart() {
     const now = new Date();
     const dateTimeString = formatDateTime(now);
-    
+
     const activeEditor = vscode.window.activeTextEditor;
     const currentFile = activeEditor ? activeEditor.document.uri.fsPath : "No active file found";
-    
+
     const sessionStartMessage = `Session started at: ${dateTimeString}\n\n`;
-    
+
     appendToLogFile(sessionStartMessage);
 }
 
 export function deactivate() {
-    // Log session end
     const now = new Date();
     const dateTimeString = formatDateTime(now);
     const sessionEndMessage = `\nSession ended at: ${dateTimeString}\n\n==================================================\n\n`;
-    
+
     try {
         appendToLogFile(sessionEndMessage);
     } catch (error) {
