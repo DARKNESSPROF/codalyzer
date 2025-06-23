@@ -1,4 +1,3 @@
-// src/runHandler/saveRun.ts
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
@@ -29,7 +28,6 @@ export function onActiveFileRun(): vscode.Disposable {
           logExecution(filePath, result, runMode);
           lastExecutionTime.set(filePath, now);
         }).catch(() => {
-          // Ignore errors
         });
       }
     }

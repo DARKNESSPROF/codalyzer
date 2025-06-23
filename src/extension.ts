@@ -7,13 +7,11 @@ import { onActiveFileRun } from './runHandler';
 let logFilePath: string;
 
 export function activate(context: vscode.ExtensionContext) {
-    // Initialize log file path
+
     logFilePath = initializeLogPath();
 
-    // Log session start
     logSessionStart();
 
-    // Register event listeners
     const activeEditorChangeDisposable = vscode.window.onDidChangeActiveTextEditor(onActiveEditorSwitch);
     const textDocumentChangeDisposable = vscode.workspace.onDidChangeTextDocument(onTextDocumentChange);
     const openLogFileDisposable = vscode.commands.registerCommand('session-logger.openLogFile', openLogFile);
@@ -26,7 +24,6 @@ export function activate(context: vscode.ExtensionContext) {
         runHandlerDisposable
     );
 
-    // Initial check for active editor
     if (vscode.window.activeTextEditor) {
         setLastActiveFile(vscode.window.activeTextEditor.document.uri.fsPath);
     }
@@ -35,11 +32,9 @@ export function activate(context: vscode.ExtensionContext) {
 function logSessionStart() {
     const now = new Date();
     const dateTimeString = formatDateTime(now);
-
-    const activeEditor = vscode.window.activeTextEditor;
-    const currentFile = activeEditor ? activeEditor.document.uri.fsPath : "No active file found";
-
-    const sessionStartMessage = `Session started at: ${dateTimeString}\n\n`;
+    //const activeEditor = vscode.window.activeTextEditor;
+    //const currentFile = activeEditor ? activeEditor.document.uri.fsPath : "No active file found";
+    const sessionStartMessage = `Session started at:${dateTimeString}\n`;
 
     appendToLogFile(sessionStartMessage);
 }
@@ -47,7 +42,7 @@ function logSessionStart() {
 export function deactivate() {
     const now = new Date();
     const dateTimeString = formatDateTime(now);
-    const sessionEndMessage = `\nSession ended at: ${dateTimeString}\n\n==================================================\n\n`;
+    const sessionEndMessage = `Session ended at:${dateTimeString}\n\n==================================================\n\n`;
 
     try {
         appendToLogFile(sessionEndMessage);
